@@ -1,82 +1,92 @@
-# **3.2.3. Görev: Mimiklerin analiz edilmesi**
+# **Facial Expression Analysis System**
 
-Bu proje, **CİNGÖZ Yarışması Etap-1** kapsamında **mimiklerin analiz edilmesi** amacıyla geliştirilmiştir.  
-Proje, **CNN** tabanlı görüntü analizi gibi teknikleri kullanarak mimiklerin analiz tespit etmektedir.
+This project is developed for the purpose of analyzing facial expressions.  
+It uses techniques such as **CNN-based image analysis** to detect and classify facial expressions from video data.
 
 ---
 
-## **📌 1. Gereksinimler ve Kurulum**
+## **📌 1. Requirements and Installation**
 
-Proje, aşağıdaki Python bağımlılıklarına ihtiyaç duymaktadır:
+The project requires the following Python dependencies:
 
-| 🔧 Bileşen             | 🏷️ Sürüm |
-| ---------------------- | -------- |
-| **CUDA Sürümü**        | 11.8     |
-| **Python Sürümü**      | >=3.8    |
-| **PyTorch Sürümü**     | >=1.10.0 |
-| **TorchVision Sürümü** | >=0.11.0 |
-| **OpenCV Sürümü**      | >=4.5.3  |
-| **Pandas**             | >=1.3.3  |
-| **Matplotlib**         | >=3.4.3  |
-| **Albumentations**     | >=1.4.15 |
-| **ONNXRuntime Sürümü** | >=1.10.0 |
-| **tqdm Sürümü**        | >=4.62.3 |
+| 🔧 Component            | 🏷️ Version |
+| ---------------------- | ---------- |
+| **CUDA Version**       | 11.8       |
+| **Python Version**     | >=3.8      |
+| **PyTorch Version**    | >=1.10.0   |
+| **TorchVision Version**| >=0.11.0   |
+| **OpenCV Version**     | >=4.5.3    |
+| **Pandas**             | >=1.3.3    |
+| **Matplotlib**         | >=3.4.3    |
+| **Albumentations**     | >=1.4.15   |
+| **ONNXRuntime**        | >=1.10.0   |
+| **tqdm**               | >=4.62.3   |
 
-## **🐳 2. Docker Kullanımı**
+---
 
-Proje, Docker konteyneri içerisinde çalıştırılmak üzere yapılandırılmıştır.
-Bu, test ortamında standartlaştırılmış bir çalışma ortamı sağlar.
+## **🐳 2. Using Docker**
 
-### **📌 2.1. Docker İmajı Oluşturma**
+The project is configured to run inside a Docker container.  
+This ensures a standardized working environment for testing and deployment.
 
-Docker imajını oluşturmak için aşağıdaki komutu çalıştırabilirsiniz:
+### **📌 2.1. Build the Docker Image**
+
+To build the Docker image, run the following command:
 
 ```bash
-sudo docker build -f docker/Dockerfile -t kizilirmak_gorev-3.2.3 .
+sudo docker build -f docker/Dockerfile -t facial_expression_analysis .
 ```
 
-komut, mevcut Dockerfile kullanarak gerekli bağımlılıkları içeren bir Docker imajı oluşturacaktır.
+This command will create a Docker image that includes all necessary dependencies based on the provided Dockerfile.
 
-### **📌 2.2. Docker Konteynerini Çalıştırma**
+### **📌 2.2. Run the Docker Container**
 
-Oluşturulan imajı bir Docker konteyneri içinde çalıştırmak için:
+To run the created image inside a Docker container:
 
 ```bash
 sudo docker run --gpus all \
-    -v /path/to/input/:/input \ # input olarak verilecek dosyanın yolu (Not: input olarak verilecek CSV dosyası ve video dosyaları ile aynı dizinde bulunmalıdır.)
-    -v /path/to/output:/output \ # output.csv dosyasının kaydedileceği local (HOST) dizin
-    kizilirmak_gorev-3.2.3
+    -v /path/to/input/:/input \  # Path containing the input CSV and video files
+    -v /path/to/output:/output \ # Path where output.csv will be saved
+    facial_expression_analysis
 ```
 
-Burada:
+Details:
 
-- `/path/to/input/`: işlenecek video dosyaları ve input.csv dosyasının bulunduğu klasör
-- `/path/to/output`: oluşturulacak çıktı dosyasının kaydedileceği klasör olmalıdır.
+- `/path/to/input/`: The directory that contains both the `input.csv` file and video files to be processed  
+- `/path/to/output/`: The directory where the generated output file (`output.csv`) will be saved
 
-**Input.csv dosyası ve video dosyaları aynı input klasöründe bulunmalıdır!**
+> ⚠️ The `input.csv` file and video files **must be in the same input directory**!
 
-## **⚠️3. Docker Kullanımında Dikkat Edilmesi Gerekenler**
+---
 
-- Çıktı klasörü Docker içinde oluşturulacak ve **bağımlı volume olarak tanımlanmalıdır**.
-- Çıktı dizinine Docker dışından erişim için izinleri düzenleyin:
+## **⚠️ 3. Notes for Docker Usage**
+
+- The output directory should be mounted as a volume inside the Docker container.
+- Set appropriate permissions to access the output directory from outside Docker:
 
 ```bash
 sudo chown -R $USER:$USER /path/to/output/
 ```
 
-## **📂 4. Klasör Yapısı**
+---
+
+## **📂 4. Project Directory Structure**
 
 ```bash
-│── 📂 proje_dizini
-│   │── 📂 src
-│   │   ├── algorithm.py
-│   │   ├── model.pt
-│   │── 📂 docker
-│   │   ├── Dockerfile
-│   │── 📂 dataset
-│   │   ├── dataset.csv
-│   │   ├── video_0001.png
-│   │   ├── video_0002.png
-│   │   ├── ...
-│   │── README.md
+📂 project_root/
+│
+├── 📂 src
+│   ├── algorithm.py         # Main analysis logic
+│   ├── model.pt             # Pre-trained CNN model
+│
+├── 📂 docker
+│   ├── Dockerfile           # Docker environment definition
+│
+├── 📂 dataset
+│   ├── dataset.csv          # Optional: training/label data
+│   ├── video_0001.png       # Sample extracted video frames
+│   ├── video_0002.png
+│   └── ...
+│
+└── README.md
 ```
