@@ -90,3 +90,12 @@ sudo chown -R $USER:$USER /path/to/output/
 │
 └── README.md
 ```
+## **🔒 5. Dataset Privacy Notice**
+
+The dataset used during the development of this project is private and confidential, and therefore cannot be shared publicly.
+For ethical and privacy reasons, this repository does not include any real facial images or video data.
+
+If you wish to reproduce or test the system, you must create and use your own dataset that complies with privacy and consent regulations.
+Your dataset should contain labeled facial expressions (e.g., happy, sad, angry, surprised, neutral, etc.) in order to train or fine-tune the model.
+
+⚠️ Please ensure all collected data is used only for research and non-commercial purposes, with the consent of all participants.
